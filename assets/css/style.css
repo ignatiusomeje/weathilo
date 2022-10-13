@@ -1,0 +1,146 @@
+body {
+  font-family: "Fira Sans", sans-serif;
+  margin: 0;
+  padding: 0;
+  color: white;
+  text-shadow: 0px 4px 8px black;
+}
+
+section.weather-container {
+  background-image: url(../images/weather-bg.jpg);
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 400;
+  padding: 10px;
+}
+
+section.weather-container .weather-content-wrap {
+  max-width: 780px;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 15px;
+  flex: 1;
+  border-radius: 10px;
+}
+
+.weather-image {
+  font-size: 200px;
+  text-align: center;
+  padding: 23px 0 0 0;
+  line-height: 270px;
+}
+
+.description-wrap{
+  display: flex;
+  justify-content: center;
+}
+
+.description-wrap-1{
+  margin-right: 10px;
+  font-size: 50px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.description-wrap-1 .city{
+  font-size: 35px;
+  font-weight: 300;
+}
+
+.description-wrap-1 .description{
+  font-size: 50px;
+  text-align: center;
+  line-height: 1.7;
+}
+
+.description-wrap-2{
+  font-size: 155px;
+}
+
+.description-wrap-2 .temperature{
+  display: flex;
+}
+
+.description-wrap-2 .temperature .temp-unit{
+  cursor: pointer;
+  color: skyblue;
+  transition: all 0.3s ease-in-out;
+}
+
+.description-wrap-2 .temperature .temp-unit:hover{
+  transform: scale(1.2);
+}
+
+.load{
+  display: inline-block;
+  position: relative;
+  width: 150px;
+  height: 150px;
+}
+
+.load div{
+  width: 24px;
+  display: inline-block;
+  position: absolute;
+  left: 15px;
+  background-color: #fff;
+  animation: load 1.2s cubic-bezier(0,0.5,0.5,1) infinite;
+}
+.load div:nth-child(1){
+  left: 20px;
+  animation-delay: -0.24s;
+}
+.load div:nth-child(2){
+  left: 55px;
+  animation-delay: -0.12s;
+}
+.load div:nth-child(3){
+  left: 90px;
+  animation-delay: 0;
+}
+@keyframes load {
+  0% {
+    top: 8px;
+    height: 100px;
+  }
+  50%, 100%{
+    top: 24px;
+    height: 50px;
+  }
+}
+
+@media screen and (max-width: 753px) {
+  .description-wrap, .description-wrap-1, .description-wrap-1 .city{
+    display: block;
+  }
+  .description-wrap-1{
+    margin-top: 20px;
+  }
+  
+  .description-wrap-1 .city, .description-wrap-2 .temperature{
+    text-align: center;
+  }
+
+  .description-wrap-1 .description{
+    line-height: 1.1;
+  }
+
+  .description-wrap-2{
+    font-size: 96px;
+  }
+
+  .description-wrap-2 .temperature{
+    justify-content: center;
+  }
+
+  .weather-content-wrap .weather-image{
+    font-size: 130px;
+    height: 160px;
+    line-height: 160px;
+  }
+}

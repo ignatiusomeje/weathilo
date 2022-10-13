@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!--  Google Font  -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,300;0,400;1,400&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Weather icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/weather-icons/2.0.12/css/weather-icons.min.css"
+      integrity="sha512-r/Gan7PMSRovDus++vDS2Ayutc/cSdl268u047n4z+k7GYuR7Hiw71FsT3QQxdKJBVHYttOJ6IGLnlM9IoMToQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <!-- FontAwesome icon -->
+    <link
+      href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+      rel="stylesheet"
+    />
+    <!-- Stylesheet link -->
+    <link rel="stylesheet" href="assets/css/style.css" />
+    <title>Weather App</title>
+  </head>
+  <body>
+    <section class="weather-container">
+      <div class="weather-content-wrap">
+        <div class="weather-image">
+          <i class="wi"></i>
+        </div>
+        <div class="description-wrap">
+          <div class="description-wrap-1">
+            <div class="city">
+              <i class="fad fa-map-marker-alt"></i>
+              <span class="city-name"></span>
+              <span class="country"></span>
+            </div>
+            <div class="description"></div>
+          </div>
+          <div class="description-wrap-2">
+            <div class="temperature">
+              <span class="temp-data"></span>
+              &deg;
+              <span class="temp-unit">C</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="load">
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+    </section>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="./assets/js/index.js"></script>
+  </body>
+</html>
