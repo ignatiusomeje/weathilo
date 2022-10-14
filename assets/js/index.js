@@ -1,7 +1,10 @@
-const hide = document.querySelector('.weather-content-wrap') 
-const load = document.querySelector('.load') 
-load.style.display = 'unset'
-hide.style.display = 'none'
+const hide = document.querySelector(".weather-content-wrap");
+const load = document.querySelector(".load");
+
+// makes the loader to be visible while the other part of the page not visible
+load.style.display = "unset";
+hide.style.display = "none";
+
 function getUserLocation() {
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(
@@ -66,8 +69,8 @@ function getUserIPAddress() {
 }
 
 function displayTemperature(tempDetails) {
-  hide.style.display = 'unset';
-  load.style.display = 'none'
+  hide.style.display = "unset";
+  load.style.display = "none";
   const weatherimage = document.querySelector(".weather-image i");
   const city = document.querySelector(".city-name");
   const country = document.querySelector(".country");
@@ -81,7 +84,7 @@ function displayTemperature(tempDetails) {
   city.textContent = `${tempDetails.name},`;
   country.textContent = tempDetails.sys.country;
   desc.textContent = tempDescription;
-  desc.style.textTransform = 'capitilize'
+  desc.style.textTransform = "capitalize";
   temperature.textContent = Math.round(tempDetails.main.temp);
 
   switch (tempDescription) {
