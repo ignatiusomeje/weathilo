@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./assets/css/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/weather-icons/2.0.12/css/weather-icons.min.css"
+      integrity="sha512-r/Gan7PMSRovDus++vDS2Ayutc/cSdl268u047n4z+k7GYuR7Hiw71FsT3QQxdKJBVHYttOJ6IGLnlM9IoMToQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <!-- FontAwesome icon -->
+    <link
+      href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+      rel="stylesheet"
+    />
+    <title>Welcome to Weathilo App</title>
+  </head>
+  <body>
+    <div class="dashboardContainer">
+      <div class="innerContainer">
+        <nav>
+          <a class="appLogo" href="/index.html"
+            ><img src="./assets/images/umbrella.png" alt="logo"
+          /></a>
+          <form action="" id="search">
+            <input
+              type="search"
+              placeholder="Search for cities"
+              name="citySearch"
+              id="citySearch"
+            />
+          </form>
+          <div class="mobile">
+            <a class="appLogo" href="/index.html"
+              ><img src="./assets/images/umbrella.png" alt="logo"
+            /></a>
+            <button id="open">About App</button>
+          </div>
+        </nav>
+
+        <div class="detailsContainer">
+          <div class="detail">
+            <div class="locationDetail">
+              <span id="locationName" class="locationName"></span>
+              <span id="locationTemp" class="locationTemp"></span>
+            </div>
+            <div id="temperature" class="temperature wi"></div>
+          </div>
+          <div class="view">
+            <div class="otherCondition">
+              <div class="crops">
+                <p class="heading">Recommended Crops to plant</p>
+                <div id="cropsListed" class="cropsListed">
+                  <!-- <span class="crop">yam</span>
+                  <span class="crop">rice</span>
+                  <span class="crop">beans</span> -->
+                </div>
+              </div>
+              <div class="layout">
+                <div class="siblings">
+                  <p class="heading">flood Probability</p>
+                  <p id="floodProbability" class="value"></p>
+                </div>
+                <div class="siblings">
+                  <p class="heading">Season</p>
+                  <p id="Season" class="value"></p>
+                </div>
+              </div>
+            </div>
+            <div class="otherCondition">
+              <div class="layout">
+                <div class="siblings">
+                  <p class="heading">Real Feel</p>
+                  <p id="feel" class="value"></p>
+                </div>
+                <div class="siblings">
+                  <p class="heading">Wind</p>
+                  <p id="wind" class="value"></p>
+                </div>
+              </div>
+              <div class="layout">
+                <div class="siblings">
+                  <p class="heading">humidity</p>
+                  <p id="humidity" class="value"></p>
+                </div>
+                <div class="siblings">
+                  <p class="heading">pressure</p>
+                  <p id="pressure" class="value"></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="load">
+      <div>
+        <img src="./assets/images/rotate-right-solid.svg" alt="" />
+        <p>Loading....</p>
+      </div>
+    </div>
+
+    <div id="modal" class="modal">
+      <div class="content">
+        <span id="close" class="close">X</span>
+        <h3>Welcome to Weathilo App</h3>
+        <p>
+          This App helps farmers to know the weather condition of their area and
+          the type of crops that they can plant in that area and season
+        </p>
+        <p>
+          The App uses your geolocation to location you and if it is not active,
+          it uses your IP address to track your location and then uses uses a
+          weather forecast API to get the weather report of that area and uses
+          Gemini Ai to tell the posibility of flood happening and also the type
+          of crops that you can plant there
+        </p>
+      </div>
+    </div>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "@google/generative-ai": "https://esm.run/@google/generative-ai"
+        }
+      }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script type="module" src="./assets/js/index.js"></script>
+  </body>
+</html>
+
+<!-- "coord": {
+  "lon": 7.4943,
+  "lat": 6.4402
+},
+"weather": [
+  {
+      "id": 803,
+      "main": "Clouds",
+      "description": "broken clouds",
+      "icon": "04d"
+  }
+],
+"base": "stations",
+"main": {
+  "temp": 30.7,
+  "feels_like": 34.7,
+  "temp_min": 30.7,
+  "temp_max": 30.7,
+  "pressure": 1012,
+  "humidity": 62,
+  "sea_level": 1012,
+  "grnd_level": 990
+},
+"visibility": 10000,
+"wind": {
+  "speed": 1.58,
+  "deg": 70,
+  "gust": 2.7
+},
+"clouds": {
+  "all": 70
+},
+"dt": 1730368356,
+"sys": {
+  "country": "NG",
+  "sunrise": 1730351800,
+  "sunset": 1730394626
+},
+"timezone": 3600,
+"id": 2343279,
+"name": "Enugu",
+"cod": 200
+} -->
+
+<!-- 
+  feel          wind
+  humidity      pressure
+
+  crops: [][][]
+  floodProbability    season
+
+-->

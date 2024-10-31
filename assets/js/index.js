@@ -1,54 +1,154 @@
-const hide = document.querySelector(".weather-content-wrap");
+// const hide = document.querySelector(".weather-content-wrap");
 const load = document.querySelector(".load");
+const citySearch = document.getElementById("citySearch");
+const search = document.getElementById("search");
+const close = document.getElementById("close");
+const open = document.getElementById("open");
+const modal = document.getElementById("modal");
+
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 // makes the loader to be visible while the other part of the page not visible
-load.style.display = "unset";
-hide.style.display = "none";
+load.style.display = "flex";
+
+search.addEventListener("submit", function (e) {
+  e.preventDefault();
+  const searchValue = new FormData(e.target);
+  if (searchValue.get("citySearch").trim() !== "") {
+    load.style.display = "flex";
+    getTemperatureBySearch(searchValue.get("citySearch"));
+    search.reset();
+  }
+});
+
+close.addEventListener("click", (e) => {
+  console;
+  modal.classList.toggle("show");
+});
+
+open.addEventListener("click", (e) => {
+  console.log("i opened");
+  modal.classList.toggle("show");
+});
+
+const key = "AIzaSyBdxwyyXdCpoI9daqZ-XseggBR0_tH2ceo";
+const genAI = new GoogleGenerativeAI(key);
+const model = genAI.getGenerativeModel({
+  model: "gemini-1.5-flash",
+  temperature: 1,
+  topK: 1,
+  topP: 1,
+});
 
 function getUserLocation() {
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(
       (position) => {
-        console.log(position.coords);
-
         getTemperatureByLocation(
           position.coords.latitude,
           position.coords.longitude
         );
       },
       (error) => {
-        console.log(error);
         getUserIPAddress();
       }
     );
   } else {
-    console.error("Geolocation is not supported by this browser");
+    console.error(
+      "Geolocation is not supported by this browser, we will use your IP to get your location"
+    );
     getUserIPAddress();
   }
 }
 
 getUserLocation();
 
-function getTemperatureByLocation(latitude, longitude) {
+async function getTemperatureBySearch(location) {
+  const appId = "bb16e18b8368d84b47250889d317c00a";
+  const url = `https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${appId}&units=metric`;
+
+  try {
+    const weatherForecast = await axios({
+      method: "get",
+      url,
+    });
+
+    askAI(weatherForecast);
+  } catch (error) {
+    alert("error fetching data");
+  }
+}
+
+async function askAI({ data }) {
+  console.log(data);
+  try {
+    const format = JSON.stringify({
+      recommendedCrops: [],
+      weather: {
+        temperature: "",
+        humidity: "",
+        season: "",
+        floodProbability: "",
+        wind: "",
+        pressure: "",
+        locationName: "",
+        feels: "",
+      },
+    });
+
+    const prompt = `use this data to tell the current weather season and type of crop to plant together with the probability of flood happening: ${JSON.stringify(
+      data
+    )}. Do not explain just reply in this format: ${format}.`;
+
+    const result = await model.generateContent(prompt);
+
+    const response = await result.response.text();
+    displayTemperature(JSON.parse(response), data);
+  } catch (error) {
+    alert("Error Fetching Data");
+  }
+}
+
+async function getTemperatureByLocation(latitude, longitude) {
   const appId = "bb16e18b8368d84b47250889d317c00a";
   const url = "https://api.openweathermap.org/data/2.5/weather";
 
-  axios({
-    method: "get",
-    url,
-    params: {
-      lat: latitude,
-      lon: longitude,
-      appid: appId,
-      units: "metric", // get value in deg celsius
-    },
-  })
-    .then((value) => {
-      console.log(value);
-      displayTemperature(value.data);
-    })
-    .catch((error) => console.error(error));
+  // AIzaSyBdxwyyXdCpoI9daqZ-XseggBR0_tH2ceo
+
+  try {
+    const weatherForecast = await axios({
+      method: "get",
+      url,
+      params: {
+        lat: latitude,
+        lon: longitude,
+        appid: appId,
+        units: "metric", // get value in deg celsius
+      },
+    });
+
+    askAI(weatherForecast);
+  } catch (error) {
+    console.log(error, "hey i am error");
+    alert("Error Fetching Data");
+  }
 }
+
+/* {
+    "recommendedCrops": [
+        "Rice",
+        "Cassava",
+        "Plantain"
+    ],
+    "weather": {
+        "temperature": "25.09°C",
+        "humidity": "94%",
+        "season": "Rainy",
+        "floodProbability": "High",
+        "wind": "2.06 m/s",
+        "pressure": "1008 hPa"
+    }
+} */
 
 function getUserIPAddress() {
   axios({
@@ -59,104 +159,121 @@ function getUserIPAddress() {
     },
   })
     .then((value) => {
-      console.log(value);
       const location = value.data.loc;
-
       const latAndLong = location.split(",");
       getTemperatureByLocation(latAndLong[0], latAndLong[1]);
     })
     .catch((error) => console.log(error));
 }
 
-function displayTemperature(tempDetails) {
-  hide.style.display = "unset";
+function displayTemperature(tempDetails, data) {
+  console.log(tempDetails, "hey, see me here");
   load.style.display = "none";
-  const weatherimage = document.querySelector(".weather-image i");
-  const city = document.querySelector(".city-name");
-  const country = document.querySelector(".country");
-  const desc = document.querySelector(".description");
-  const temperature = document.querySelector(".temp-data");
 
-  let tempDescription = tempDetails.weather[0].description;
-  const weatherIcon = tempDetails.weather[0].icon;
+  const temperature = document.getElementById("temperature");
+  const locationName = document.getElementById("locationName");
+  const locationTemp = document.getElementById("locationTemp");
+  const cropsListed = document.getElementById("cropsListed");
+  const floodProbability = document.getElementById("floodProbability");
+  const Season = document.getElementById("Season");
+  const humidity = document.getElementById("humidity");
+  const pressure = document.getElementById("pressure");
+  const wind = document.getElementById("wind");
+  const feel = document.getElementById("feel");
+
+  locationName.textContent =
+    tempDetails.weather.locationName + `, ${data.sys.country}`;
+  locationTemp.textContent = tempDetails.weather.temperature;
+  floodProbability.textContent = tempDetails.weather.floodProbability;
+  Season.textContent = tempDetails.weather.season;
+  humidity.textContent = tempDetails.weather.humidity;
+  pressure.textContent = tempDetails.weather.pressure;
+  wind.textContent = tempDetails.weather.wind;
+  feel.textContent = tempDetails.weather.feels;
+  cropsListed.textContent = "";
+
+  tempDetails.recommendedCrops.length > 0
+    ? tempDetails.recommendedCrops.map((crop) => {
+        const span = document.createElement("span");
+        span.setAttribute("class", "crop");
+        span.textContent = crop;
+        cropsListed.appendChild(span);
+      })
+    : (cropsListed.textContent = "No Crop to recommend");
+
+  let tempDescription = data.weather[0].description;
+  const weatherIcon = data.weather[0].icon;
   const isDay = weatherIcon.includes("d"); //returns a boolean true if letter 'd' is contained in the icon name
-
-  city.textContent = `${tempDetails.name},`;
-  country.textContent = tempDetails.sys.country;
-  desc.textContent = tempDescription;
-  desc.style.textTransform = "capitalize";
-  temperature.textContent = Math.round(tempDetails.main.temp);
 
   switch (tempDescription) {
     case "clear sky":
       if (isDay) {
-        weatherimage.classList.add("wi-day-sunny");
+        temperature.classList.add("wi-day-sunny");
       } else {
-        weatherimage.classList.add("wi-night-clear");
+        temperature.classList.add("wi-night-clear");
       }
       break;
     case "few clouds":
       if (isDay) {
-        weatherimage.classList.add("wi-day-cloudy");
+        temperature.classList.add("wi-day-cloudy");
       } else {
-        weatherimage.classList.add("wi-night-alt-cloudy");
+        temperature.classList.add("wi-night-alt-cloudy");
       }
       break;
     case "scattered clouds":
-      weatherimage.classList.add("wi-cloud");
+      temperature.classList.add("wi-cloud");
       break;
     case "broken clouds":
     case "overcast clouds":
-      weatherimage.classList.add("wi-cloudy");
+      temperature.classList.add("wi-cloudy");
       break;
     case "light rain":
     case "very heavy rain":
     case "extreme rain":
     case "moderate rain":
       if (isDay) {
-        weatherimage.classList.add("wi-day-showers");
+        temperature.classList.add("wi-day-showers");
       } else {
-        weatherimage.classList.add("wi-night-alt-showers");
+        temperature.classList.add("wi-night-alt-showers");
       }
       break;
     case "shower rain":
-      weatherimage.classList.add("wi-showers");
+      temperature.classList.add("wi-showers");
       break;
     case "thunderstorm":
     case "heavy thunderstorm":
       if (isDay) {
-        weatherimage.classList.add("wi-day-lightning");
+        temperature.classList.add("wi-day-lightning");
       } else {
-        weatherimage.classList.add("wi-night-alt-lightning");
+        temperature.classList.add("wi-night-alt-lightning");
       }
       break;
     case "thunderstorm with light rain":
     case "thunderstorm with rain":
     case "thunderstorm with heavy rain":
-      weatherimage.classList.add("wi-storm-showers");
+      temperature.classList.add("wi-storm-showers");
     default:
       break;
   }
 }
 
-function convertCelsuisToFahrenheit() {
-  let initialDegreeCelsius = "";
-  document
-    .querySelector(".description-wrap-2 .temp-unit")
-    .addEventListener("click", (event) => {
-      const tempData = document.querySelector(".temp-data");
-      const degCelsiusInt = parseInt(tempData.textContent);
+// function convertCelsuisToFahrenheit() {
+//   let initialDegreeCelsius = "";
+//   const temperature = document.getElementById("temperature")
+//     .addEventListener("click", (event) => {
+//       const temperature = document.getElementById("temperature")
+//       const degCelsiusInt = parseInt(temperature.textContent);
 
-      event.target.classList.toggle("temp-convert");
-      if (event.target.classList.contains("temp-convert")) {
-        event.target.textContent = "F";
-        const fahrenheitresult = Math.round((degCelsiusInt * 9) / 5 + 32);
-        initialDegreeCelsius = tempData.textContent;
-        tempData.textContent = fahrenheitresult;
-      } else {
-        event.target.textContent = "C";
-        tempData.textContent = initialDegreeCelsius;
-      }
-    });
-}
-convertCelsuisToFahrenheit();
+//       event.target.classList.toggle("temp-convert");
+//       if (event.target.classList.contains("temp-convert")) {
+//         event.target.textContent = "F";
+//         const fahrenheitresult = Math.round((degCelsiusInt * 9) / 5 + 32);
+//         initialDegreeCelsius = temperature.textContent;
+//         temperature.textContent = fahrenheitresult;
+//       } else {
+//         event.target.textContent = "C";
+//         temperature.textContent = initialDegreeCelsius;
+//       }
+//     });
+// }
+// convertCelsuisToFahrenheit();

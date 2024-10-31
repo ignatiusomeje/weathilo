@@ -1,12 +1,412 @@
+@font-face {
+  font-family: "square";
+  src: url("./../fonts/SQR721B.woff");
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "square";
+  src: url("./../fonts/Square721N.otf");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "inter";
+  src: url("./../fonts/Inter-VariableFont_opsz\,wght.ttf");
+  font-weight: normal;
+  font-style: normal;
+}
+
+:root {
+  --primary-color: #0b131e;
+  --secondary-color: #202b3b;
+  --text: #fff;
+  --text-secondary: gray;
+  --btn: #0095ff;
+  --sun: #f0c91b;
+}
+
+* {
+  box-sizing: border-box;
+  font-family: "inter";
+}
+
 body {
   font-family: "Fira Sans", sans-serif;
   margin: 0;
   padding: 0;
-  color: white;
-  text-shadow: 0px 4px 8px black;
+  color: var(--text);
+  position: relative;
+  /* text-shadow: 0px 4px 8px black; */
 }
 
-section.weather-container {
+/* landing page */
+.landingContainer {
+  background-color: var(--primary-color);
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  padding: 3rem;
+  gap: 2rem;
+
+  .logo {
+    background-color: var(--secondary-color);
+    height: 100%;
+    width: 100%;
+    border-radius: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    img {
+      max-width: 23rem;
+      width: 100%;
+    }
+
+    @media (width < 768px) {
+      display: none;
+    }
+  }
+  .writeUp {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    .innerLogo {
+      width: 5rem;
+      background: var(--secondary-color);
+      border-radius: 1rem;
+      align-items: center;
+      justify-content: center;
+      display: none;
+
+      @media (width < 768px) {
+        display: flex;
+      }
+
+      img {
+        width: 100%;
+      }
+    }
+
+    .head {
+      text-align: center;
+      padding-bottom: 1.4rem;
+      h1 {
+        margin-bottom: 0;
+        font-family: "square";
+        text-transform: uppercase;
+      }
+      p {
+        color: var(--text-secondary);
+        font-family: "inter";
+      }
+    }
+
+    a {
+      background-color: var(--btn);
+      padding: 0.7rem 2rem;
+      text-decoration: none;
+      border-radius: 1rem;
+      color: var(--text);
+      font-family: "square";
+      font-weight: normal;
+
+      &:hover {
+        scale: 1.04;
+      }
+    }
+  }
+}
+
+.dashboardContainer {
+  background-color: var(--primary-color);
+  width: 100%;
+  height: 100vh;
+  color: var(--text);
+  /* display: flex; */
+  padding: 1rem 3rem;
+  @media (width < 768px) {
+    padding: 1rem 1rem;
+    height: max-content;
+  }
+  /* gap: 2rem; */
+
+  .appLogo {
+    img {
+      width: 4rem;
+      display: block;
+
+      @media (width < 768px) {
+        display: none;
+      }
+    }
+  }
+
+  .innerContainer {
+    max-width: 1024px;
+    width: 100%;
+    height: 100%;
+    margin: auto;
+    padding-bottom: 4rem;
+    /* overflow: hidden; */
+  }
+
+  nav {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+
+    @media (width < 768px) {
+      flex-direction: column-reverse;
+
+      .mobile {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+        width: 100%;
+        img {
+          display: block;
+          width: 4rem;
+        }
+      }
+    }
+
+    @media (width >= 768px) {
+      .mobile {
+        img {
+          display: none;
+          width: 4rem;
+        }
+      }
+    }
+
+    form {
+      max-width: 500px;
+      width: 100%;
+      input {
+        width: 100%;
+        padding: 0.5rem 1rem;
+        background-color: var(--secondary-color);
+        color: var(--text);
+        border: none;
+        border-radius: 0.5rem;
+
+        &:focus {
+          outline: none;
+        }
+
+        &::placeholder {
+          color: var(--text);
+        }
+      }
+    }
+
+    button {
+      background-color: var(--btn);
+      color: var(--text);
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+
+      &:hover {
+        scale: 1.05;
+        cursor: pointer;
+      }
+    }
+  }
+
+  .view {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 2rem;
+  }
+
+  .detailsContainer {
+    /* padding-top: 2rem; */
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+    height: 100%;
+
+    .detail {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      flex-grow: 1;
+      flex-basis: 1;
+      justify-content: space-between;
+      align-items: center;
+      padding: 2rem 1.5rem;
+
+      @media (width < 768px) {
+        flex-direction: column-reverse;
+        gap: 1.3rem;
+      }
+
+      .locationDetail {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+
+        @media (width < 768px) {
+          text-align: center;
+        }
+
+        .locationName {
+          font-size: 2.5rem;
+          font-family: "square";
+          font-weight: bold;
+        }
+        .locationTemp {
+          font-size: 1.5rem;
+          font-family: "square";
+          font-weight: bold;
+        }
+      }
+
+      .temperature {
+        color: var(--sun);
+        font-size: 5rem;
+      }
+    }
+
+    .otherCondition {
+      width: 100%;
+      background-color: var(--secondary-color);
+      border-radius: 1rem;
+      padding: 1.5rem;
+
+      .heading {
+        color: var(--text-secondary);
+        text-transform: capitalize;
+      }
+      .layout {
+        display: flex;
+        gap: 1rem;
+
+        @media (width < 768px) {
+          flex-direction: column;
+          gap: 0;
+        }
+
+        .siblings {
+          width: 100%;
+        }
+        .value {
+          font-family: "square";
+          font-weight: bold;
+        }
+      }
+
+      .crops {
+        display: flex;
+        flex-direction: column;
+
+        .cropsListed {
+          display: flex;
+          gap: 0.5rem;
+          align-items: center;
+          flex-wrap: wrap;
+
+          @media (width < 768px) {
+            gap: 0.3rem;
+          }
+
+          .crop {
+            background-color: var(--primary-color);
+            padding: 0.3rem 1rem;
+            border-radius: 1rem;
+          }
+        }
+      }
+    }
+  }
+}
+
+.load {
+  width: 100%;
+  min-height: 100vh;
+  height: 100%;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  background-color: var(--primary-color);
+  overflow: hidden;
+  bottom: 0;
+
+  img {
+    width: 4rem;
+    animation: spin 1s linear infinite;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.modal {
+  width: 100%;
+  min-height: 100vh;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.449);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  
+
+  .content {
+    background-color: var(--secondary-color);
+    margin: 2rem;
+    max-width: 400px;
+    width: 100%;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 0 0 1rem var(--secondary-color);
+    position: relative;
+
+    h3 {
+      font-family: "square";
+      text-transform: capitalize;
+    }
+    .close {
+      position: absolute;
+      right: 0;
+      top: 0;
+      font-size: 1.5rem;
+
+      &:hover{
+        cursor: pointer;
+      }
+    }
+  }
+}
+
+.show{
+  display: flex;
+}
+
+/* section.weather-container {
   background-image: url(../images/weather-bg.jpg);
   background-repeat: no-repeat;
   background-position: center center;
@@ -34,12 +434,12 @@ section.weather-container .weather-content-wrap {
   line-height: 270px;
 }
 
-.description-wrap{
+.description-wrap {
   display: flex;
   justify-content: center;
 }
 
-.description-wrap-1{
+.description-wrap-1 {
   margin-right: 10px;
   font-size: 50px;
   display: flex;
@@ -47,59 +447,59 @@ section.weather-container .weather-content-wrap {
   flex-direction: column;
 }
 
-.description-wrap-1 .city{
+.description-wrap-1 .city {
   font-size: 35px;
   font-weight: 300;
 }
 
-.description-wrap-1 .description{
+.description-wrap-1 .description {
   font-size: 50px;
   text-align: center;
   line-height: 1.7;
 }
 
-.description-wrap-2{
+.description-wrap-2 {
   font-size: 155px;
 }
 
-.description-wrap-2 .temperature{
+.description-wrap-2 .temperature {
   display: flex;
 }
 
-.description-wrap-2 .temperature .temp-unit{
+.description-wrap-2 .temperature .temp-unit {
   cursor: pointer;
   color: skyblue;
   transition: all 0.3s ease-in-out;
 }
 
-.description-wrap-2 .temperature .temp-unit:hover{
+.description-wrap-2 .temperature .temp-unit:hover {
   transform: scale(1.2);
 }
 
-.load{
+.load {
   display: inline-block;
   position: relative;
   width: 150px;
   height: 150px;
 }
 
-.load div{
+.load div {
   width: 24px;
   display: inline-block;
   position: absolute;
   left: 15px;
   background-color: #fff;
-  animation: load 1.2s cubic-bezier(0,0.5,0.5,1) infinite;
+  animation: load 1.2s cubic-bezier(0, 0.5, 0.5, 1) infinite;
 }
-.load div:nth-child(1){
+.load div:nth-child(1) {
   left: 20px;
   animation-delay: -0.24s;
 }
-.load div:nth-child(2){
+.load div:nth-child(2) {
   left: 55px;
   animation-delay: -0.12s;
 }
-.load div:nth-child(3){
+.load div:nth-child(3) {
   left: 90px;
   animation-delay: 0;
 }
@@ -108,39 +508,43 @@ section.weather-container .weather-content-wrap {
     top: 8px;
     height: 100px;
   }
-  50%, 100%{
+  50%,
+  100% {
     top: 24px;
     height: 50px;
   }
 }
 
 @media screen and (max-width: 753px) {
-  .description-wrap, .description-wrap-1, .description-wrap-1 .city{
+  .description-wrap,
+  .description-wrap-1,
+  .description-wrap-1 .city {
     display: block;
   }
-  .description-wrap-1{
+  .description-wrap-1 {
     margin-top: 20px;
   }
-  
-  .description-wrap-1 .city, .description-wrap-2 .temperature{
+
+  .description-wrap-1 .city,
+  .description-wrap-2 .temperature {
     text-align: center;
   }
 
-  .description-wrap-1 .description{
+  .description-wrap-1 .description {
     line-height: 1.1;
   }
 
-  .description-wrap-2{
+  .description-wrap-2 {
     font-size: 96px;
   }
 
-  .description-wrap-2 .temperature{
+  .description-wrap-2 .temperature {
     justify-content: center;
   }
 
-  .weather-content-wrap .weather-image{
+  .weather-content-wrap .weather-image {
     font-size: 130px;
     height: 160px;
     line-height: 160px;
   }
-}
+} */
