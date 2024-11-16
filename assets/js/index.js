@@ -34,7 +34,7 @@ open.addEventListener("click", (e) => {
 const key = "AIzaSyBdxwyyXdCpoI9daqZ-XseggBR0_tH2ceo";
 const genAI = new GoogleGenerativeAI(key);
 const model = genAI.getGenerativeModel({
-  model: "gemini-1.5-flash",
+  model: "gemini-1.5-pro",
   temperature: 1,
   topK: 1,
   topP: 1,
@@ -96,15 +96,28 @@ async function askAI({ data }) {
       },
     });
 
+    // const prompt = `Give me a list of recommended crops for Orogbum based on current weather conditions. Include temperature, humidity, season, flood probability, wind speed, pressure, and feels-like temperature.${JSON.stringify(
+    //   data
+    // )}. Do not explain just reply in as a javascript object`;
     const prompt = `use this data to tell the current weather season and type of crop to plant together with the probability of flood happening: ${JSON.stringify(
       data
-    )}. Do not explain just reply in this format: ${format}.`;
+    )}. Do not explain just reply in this format but as object: ${format}.`;
 
     const result = await model.generateContent(prompt);
 
     const response = await result.response.text();
-    displayTemperature(JSON.parse(response), data);
+    if (response.includes("```json") || response.includes("```")) {
+      const cleanedString = response
+        .replace(/```json/g, "")
+        .replace(/```/g, "");
+      displayTemperature(JSON.parse(cleanedString), data);
+      console.log(cleanedString, "here am i")
+    } else {
+      displayTemperature(response, data);
+    }
+    console.log(response, "see this here");
   } catch (error) {
+    console.log(error, "this is the error");
     alert("Error Fetching Data");
   }
 }
