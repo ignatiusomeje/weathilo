@@ -131,7 +131,7 @@ body {
   color: var(--text);
   /* display: flex; */
   padding: 1rem 3rem;
-  @media (width < 768px) {
+  @media (width < 1024px) {
     padding: 1rem 1rem;
     height: max-content;
   }

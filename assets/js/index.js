@@ -11,6 +11,18 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 // makes the loader to be visible while the other part of the page not visible
 load.style.display = "flex";
 
+const weatherLoader = Swal.mixin({
+  toast: true,
+  position: "top-end",
+  showConfirmButton: false,
+  timerProgressBar: false,
+  didOpen: (toast) => {
+    toast.onmouseenter = Swal.stopTimer;
+    toast.onmouseleave = Swal.resumeTimer;
+  },
+  timer: 3000, // Auto-close after 2 seconds
+});
+
 search.addEventListener("submit", function (e) {
   e.preventDefault();
   const searchValue = new FormData(e.target);
@@ -22,12 +34,10 @@ search.addEventListener("submit", function (e) {
 });
 
 close.addEventListener("click", (e) => {
-  console;
   modal.classList.toggle("show");
 });
 
 open.addEventListener("click", (e) => {
-  console.log("i opened");
   modal.classList.toggle("show");
 });
 
@@ -35,6 +45,13 @@ const key = "AIzaSyBdxwyyXdCpoI9daqZ-XseggBR0_tH2ceo";
 const genAI = new GoogleGenerativeAI(key);
 const model = genAI.getGenerativeModel({
   model: "gemini-1.5-pro",
+  temperature: 1,
+  topK: 1,
+  topP: 1,
+});
+
+const model2 = genAI.getGenerativeModel({
+  model: "gemini-1.5-flash",
   temperature: 1,
   topK: 1,
   topP: 1,
@@ -54,9 +71,6 @@ function getUserLocation() {
       }
     );
   } else {
-    console.error(
-      "Geolocation is not supported by this browser, we will use your IP to get your location"
-    );
     getUserIPAddress();
   }
 }
@@ -72,15 +86,27 @@ async function getTemperatureBySearch(location) {
       method: "get",
       url,
     });
-
     askAI(weatherForecast);
   } catch (error) {
-    alert("error fetching data");
+    if (error.response.status === 404) {
+      weatherLoader.fire({
+        icon: "error",
+        title: "Search Error",
+        text: error.response.data.message,
+      });
+    } else {
+      weatherLoader.fire({
+        icon: "error",
+        title: "Search Error",
+        text: "Error fetching Location data",
+      });
+    }
+    load.style.display = "none";
   }
 }
 
-async function askAI({ data }) {
-  console.log(data);
+async function askAI(fetchedData, retry) {
+  const data = fetchedData?.data;
   try {
     const format = JSON.stringify({
       recommendedCrops: [],
@@ -99,26 +125,45 @@ async function askAI({ data }) {
     // const prompt = `Give me a list of recommended crops for Orogbum based on current weather conditions. Include temperature, humidity, season, flood probability, wind speed, pressure, and feels-like temperature.${JSON.stringify(
     //   data
     // )}. Do not explain just reply in as a javascript object`;
-    const prompt = `use this data to tell the current weather season and type of crop to plant together with the probability of flood happening: ${JSON.stringify(
+    const prompt = `As a Hydrologist and Meteorologist, use this data to tell the current weather season and type of crop to plant together with the probability of flood happening: ${JSON.stringify(
       data
     )}. Do not explain just reply in this format but as object: ${format}.`;
 
-    const result = await model.generateContent(prompt);
-
+    let result;
+    if (retry) {
+      result = await model.generateContent(prompt);
+    } else {
+      result = await model2.generateContent(prompt);
+    }
     const response = await result.response.text();
     if (response.includes("```json") || response.includes("```")) {
       const cleanedString = response
         .replace(/```json/g, "")
         .replace(/```/g, "");
       displayTemperature(JSON.parse(cleanedString), data);
-      console.log(cleanedString, "here am i")
     } else {
       displayTemperature(response, data);
     }
-    console.log(response, "see this here");
   } catch (error) {
-    console.log(error, "this is the error");
-    alert("Error Fetching Data");
+    if (
+      error &&
+      typeof error === "string" &&
+      error.includes(
+        "Unable to submit request because the service is temporarily unavailable."
+      )
+    ) {
+      askAI(fetchedData, true);
+    } else {
+      weatherLoader.fire({
+        icon: "error",
+        title: "Error",
+        text: "Error fetching data from AI",
+      });
+      load.style.display = "none";
+    }
+    // // error.includes("Unable to submit request because the service is temporarily unavailable.")
+    // console.log(error, "this is the Ai error");
+    // alert("Error Fetching Data");
   }
 }
 
@@ -142,8 +187,12 @@ async function getTemperatureByLocation(latitude, longitude) {
 
     askAI(weatherForecast);
   } catch (error) {
-    console.log(error, "hey i am error");
-    alert("Error Fetching Data");
+    weatherLoader.fire({
+      icon: "error",
+      title: "Weather Report Error",
+      text: "Error fetching weather report",
+    });
+    load.style.display = "none";
   }
 }
 
@@ -176,7 +225,14 @@ function getUserIPAddress() {
       const latAndLong = location.split(",");
       getTemperatureByLocation(latAndLong[0], latAndLong[1]);
     })
-    .catch((error) => console.log(error));
+    .catch((error) => {
+      weatherLoader.fire({
+        icon: "error",
+        title: "User Ip Error",
+        text: "Error using User IP to get Location",
+      });
+      load.style.display = "none";
+    });
 }
 
 function displayTemperature(tempDetails, data) {
